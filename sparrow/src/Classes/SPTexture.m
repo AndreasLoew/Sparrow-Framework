@@ -9,6 +9,12 @@
 //  it under the terms of the Simplified BSD License.
 //
 
+//
+//  Modifications by Andreas Loew / www.texturepacker.com
+//  Support for RGBA8888 PVRs
+//  Support for zlib compressed PVRs
+// 
+
 #import "SPTexture.h"
 #import "SPMacros.h"
 #import "SPUtils.h"
@@ -17,6 +23,7 @@
 #import "SPSubTexture.h"
 #import "SPNSExtensions.h"
 #import "SPStage.h"
+#import "zlib.h"
 
 // --- PVRTC structs & enums -----------------------------------------------------------------------
 
@@ -56,6 +63,7 @@ enum PVRPixelType
 @interface SPTexture ()
 
 - (id)initWithContentsOfPvrFile:(NSString *)path;
+- (id)initWithContentsOfCompressedPvrFile:(NSString *)path;
 
 @end
 
@@ -92,6 +100,8 @@ enum PVRPixelType
     NSString *imgType = [[path pathExtension] lowercaseString];
     if ([imgType rangeOfString:@"pvr"].location == 0)
         return [self initWithContentsOfPvrFile:fullPath];            
+    else if ([imgType rangeOfString:@"ccz"].location == 0)
+        return [self initWithContentsOfCompressedPvrFile:fullPath];            
     else
         return [self initWithContentsOfImage:[UIImage imageWithContentsOfFile:fullPath]];        
 }
@@ -182,12 +192,11 @@ enum PVRPixelType
             }];
 }
 
-- (id)initWithContentsOfPvrFile:(NSString*)path
+- (id)initWithPvrData:(const char*)data path:(NSString*)path
 {
     [self release]; // class factory - we'll return a subclass!
 
-    NSData *fileData = [[NSData alloc] initWithContentsOfFile:path];
-    PVRTextureHeader *header = (PVRTextureHeader *)[fileData bytes];    
+    PVRTextureHeader *header = (PVRTextureHeader *)data;    
     bool hasAlpha = header->alphaBitMask ? YES : NO;
     
     SPTextureProperties properties = {
@@ -207,7 +216,10 @@ enum PVRPixelType
             break;
         case OGL_RGBA_4444:
             properties.format = SPTextureFormat4444;
-            break;            
+            break;  
+        case OGL_RGBA_8888:
+            properties.format = SPTextureFormatRGBA;
+            break;
         case OGL_PVRTC2:
             properties.format = hasAlpha ? SPTextureFormatPvrtcRGBA2 : SPTextureFormatPvrtcRGB2;
             break;
@@ -215,7 +227,6 @@ enum PVRPixelType
             properties.format = hasAlpha ? SPTextureFormatPvrtcRGBA4 : SPTextureFormatPvrtcRGB4;
             break;
         default: 
-            [fileData release];
             [NSException raise:SP_EXC_INVALID_OPERATION format:@"Unsupported PRV image format"];
             return nil;
     }
@@ -223,14 +234,97 @@ enum PVRPixelType
     void *imageData = (unsigned char *)header + header->headerSize;
 
     SPGLTexture *glTexture = [[SPGLTexture alloc] initWithData:imageData properties:properties];
-    [fileData release];
     
     NSString *baseFilename = [[path lastPathComponent] stringByDeletingPathExtension];
+    NSLog(@"%@", baseFilename);
     if ([baseFilename rangeOfString:@"@2x"].location == baseFilename.length - 3)
         glTexture.scale = 2.0f;
     
     return glTexture;
 }
+
+static inline uint16_t get16(const unsigned char *pos)
+{
+    return (pos[0] << 8) | pos[1];
+}
+
+static inline uint32_t get32(const unsigned char *pos)
+{
+    return (pos[0] << 24) | (pos[1] << 16) | (pos[2] << 8) | pos[3];
+}
+
+
+
+- (id)initWithContentsOfCompressedPvrFile:(NSString*)path
+{
+    NSData *fileData = [[NSData alloc] initWithContentsOfFile:path];
+    const unsigned char *data = [fileData bytes];
+
+    // 0: sig CCZ!
+    // 4: compression type 0=zlib
+    // 6: version: 1
+    // 8: reserved
+    // 12: len
+
+    // check magic
+    if((data[0] != 'C') && (data[1] != 'C') && (data[2] != 'Z') && (data[3] != '!'))
+    {
+        [fileData release];
+        [NSException raise:SP_EXC_INVALID_OPERATION format:@"Data format error"];        
+    }
+
+    // file version
+    if(get16(&data[6]) != 1)
+    {
+        [fileData release];
+        [NSException raise:SP_EXC_INVALID_OPERATION format:@"Data format error"];        
+    }
+
+    // compression type must be zlib
+    if( get16(&data[4]) != 0 )
+    {
+        [fileData release];
+        [NSException raise:SP_EXC_INVALID_OPERATION format:@"Data format error"];        
+	}
+    
+    // allocate buffer for decompressed data
+    uLongf len = get32(&data[12]);
+    Bytef *buffer = malloc(len);
+    if(0 == buffer)
+    {
+        [fileData release];
+        [NSException raise:SP_EXC_INVALID_OPERATION format:@"Out of memory"];        
+    }
+    
+    // decompress the buffer using zlib
+    if(uncompress(buffer, &len, &data[16], [fileData length]-16) != Z_OK)
+    {
+        free(buffer);
+        [fileData release];
+        [NSException raise:SP_EXC_INVALID_OPERATION format:@"Data format error"];                
+    }
+    
+    // release the original file data - not needed anymore
+    [fileData release];
+
+    // drop .ccz from file name
+    NSString *baseFilename = [[path lastPathComponent] stringByDeletingPathExtension];
+    
+    // convert PVR into texture
+    id texture = [self initWithPvrData:(const char*)buffer path:baseFilename];
+    
+    free(buffer);
+    
+    return texture;
+}
+
+- (id)initWithContentsOfPvrFile:(NSString*)path
+{
+    NSData *fileData = [[[NSData alloc] initWithContentsOfFile:path] autorelease];
+    return [self initWithPvrData:[fileData bytes] path:path];
+}
+
+
 
 - (id)initWithRegion:(SPRectangle*)region ofTexture:(SPTexture*)texture
 {

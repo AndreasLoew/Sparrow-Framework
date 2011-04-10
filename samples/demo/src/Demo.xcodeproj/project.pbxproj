@@ -32,8 +32,9 @@
 		25C23C0011ECA85200A25DF7 /* branching_mouse.fnt in Resources */ = {isa = PBXBuildFile; fileRef = 25C23BFE11ECA85200A25DF7 /* branching_mouse.fnt */; };
 		25C23C0111ECA85200A25DF7 /* branching_mouse.png in Resources */ = {isa = PBXBuildFile; fileRef = 25C23BFF11ECA85200A25DF7 /* branching_mouse.png */; };
 		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
-		535E774F13523B63003690B4 /* atlas.pvr in Resources */ = {isa = PBXBuildFile; fileRef = 535E774E13523B63003690B4 /* atlas.pvr */; };
-		535E775113523B72003690B4 /* atlas@2x.pvr in Resources */ = {isa = PBXBuildFile; fileRef = 535E775013523B72003690B4 /* atlas@2x.pvr */; };
+		53EA99D1135244C100ECC343 /* atlas.pvr.ccz in Resources */ = {isa = PBXBuildFile; fileRef = 53EA99D0135244C100ECC343 /* atlas.pvr.ccz */; };
+		53EA99D3135244C900ECC343 /* atlas@2x.pvr.ccz in Resources */ = {isa = PBXBuildFile; fileRef = 53EA99D2135244C900ECC343 /* atlas@2x.pvr.ccz */; };
+		53EA99F613524B9E00ECC343 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 53EA99F513524B9E00ECC343 /* libz.dylib */; };
 		DE061A2A119D799900DFF25D /* MovieScene.m in Sources */ = {isa = PBXBuildFile; fileRef = DE061A29119D799900DFF25D /* MovieScene.m */; };
 		DE0F755910641630004F2821 /* BenchmarkScene.m in Sources */ = {isa = PBXBuildFile; fileRef = DE0F755810641630004F2821 /* BenchmarkScene.m */; };
 		DE18FE3711B0839E00D01F04 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE18FE3611B0839E00D01F04 /* AVFoundation.framework */; };
@@ -114,8 +115,9 @@
 		28AD733E0D9D9553002E5188 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* Demo_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Demo_Prefix.pch; sourceTree = "<group>"; };
-		535E774E13523B63003690B4 /* atlas.pvr */ = {isa = PBXFileReference; lastKnownFileType = file; path = atlas.pvr; sourceTree = "<group>"; };
-		535E775013523B72003690B4 /* atlas@2x.pvr */ = {isa = PBXFileReference; lastKnownFileType = file; path = "atlas@2x.pvr"; sourceTree = "<group>"; };
+		53EA99D0135244C100ECC343 /* atlas.pvr.ccz */ = {isa = PBXFileReference; lastKnownFileType = file; path = atlas.pvr.ccz; sourceTree = "<group>"; };
+		53EA99D2135244C900ECC343 /* atlas@2x.pvr.ccz */ = {isa = PBXFileReference; lastKnownFileType = file; path = "atlas@2x.pvr.ccz"; sourceTree = "<group>"; };
+		53EA99F513524B9E00ECC343 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		8D1107310486CEB800E47090 /* Demo-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Demo-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		DE061A28119D799900DFF25D /* MovieScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MovieScene.h; sourceTree = "<group>"; };
 		DE061A29119D799900DFF25D /* MovieScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MovieScene.m; sourceTree = "<group>"; };
@@ -161,6 +163,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				53EA99F613524B9E00ECC343 /* libz.dylib in Frameworks */,
 				DEF34CCC10F1C6180019136B /* libSparrow.a in Frameworks */,
 				DEF171F611B010E500A11DD7 /* CoreGraphics.framework in Frameworks */,
 				DEF171F811B010E500A11DD7 /* Foundation.framework in Frameworks */,
@@ -200,7 +203,7 @@
 		25C23A5411EC631500A25DF7 /* 1x */ = {
 			isa = PBXGroup;
 			children = (
-				535E774E13523B63003690B4 /* atlas.pvr */,
+				53EA99D0135244C100ECC343 /* atlas.pvr.ccz */,
 				25894E0E11EDD209005616B4 /* resolution.png */,
 				25C23BFE11ECA85200A25DF7 /* branching_mouse.fnt */,
 				25C23BFF11ECA85200A25DF7 /* branching_mouse.png */,
@@ -220,7 +223,7 @@
 		25C23A6311EC632400A25DF7 /* 2x */ = {
 			isa = PBXGroup;
 			children = (
-				535E775013523B72003690B4 /* atlas@2x.pvr */,
+				53EA99D2135244C900ECC343 /* atlas@2x.pvr.ccz */,
 				25894E0C11EDD1FA005616B4 /* resolution@2x.png */,
 				25C23BFA11ECA83D00A25DF7 /* branching_mouse@2x.fnt */,
 				25C23BFB11ECA83D00A25DF7 /* branching_mouse@2x.png */,
@@ -240,6 +243,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				53EA99F513524B9E00ECC343 /* libz.dylib */,
 				DEFE4D07101B6B3500E22471 /* Sparrow.xcodeproj */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -451,8 +455,8 @@
 				25C23C0111ECA85200A25DF7 /* branching_mouse.png in Resources */,
 				25894E0D11EDD1FA005616B4 /* resolution@2x.png in Resources */,
 				25894E0F11EDD209005616B4 /* resolution.png in Resources */,
-				535E774F13523B63003690B4 /* atlas.pvr in Resources */,
-				535E775113523B72003690B4 /* atlas@2x.pvr in Resources */,
+				53EA99D1135244C100ECC343 /* atlas.pvr.ccz in Resources */,
+				53EA99D3135244C900ECC343 /* atlas@2x.pvr.ccz in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
