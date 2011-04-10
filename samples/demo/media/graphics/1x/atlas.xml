@@ -1,4 +1,4 @@
-<TextureAtlas imagePath='atlas.png'>
+<TextureAtlas imagePath='atlas.pvr.ccz'>
   <SubTexture name='egg_opened' x='0' y='0' height='180.5' width='128.0'/>
   <SubTexture name='egg_closed' x='129' y='0' height='151.0' width='151.0'/>
   <SubTexture name='walk_03' x='0' y='181' height='150.5' width='87.0'/>
